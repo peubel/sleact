@@ -5,12 +5,11 @@ import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcehr';
+import { Redirect } from 'react-router';
 
 const LogIn = () => {
   // @ts-ignore
-  const { data, error, revalidate } = useSWR('http://localhost:3095/api/users', fetcher, {
-    dedupingInterval: 100000,
-  });
+  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher);
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
@@ -29,7 +28,7 @@ const LogIn = () => {
           },
         )
         .then((response) => {
-          revalidate();
+          mutate(response.data, false);
         })
         .catch((error) => {
           setLogInError(error.response?.data?.statusCode === 401);
@@ -37,6 +36,10 @@ const LogIn = () => {
     },
     [email, password],
   );
+
+  if (data) {
+    return <Redirect to='/workspace/channel' />;
+  }
 
   // console.log(error, userData);
   // if (!error && userData) {

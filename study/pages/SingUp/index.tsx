@@ -3,8 +3,12 @@ import { Button, Error, Form, Header, Input, Label, LinkContainer, Success } fro
 import { Link } from 'react-router-dom';
 import useInput from '@hooks/useInput';
 import axios from 'axios';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcehr';
+import { Redirect } from 'react-router';
 
 const SingUp = () => {
+  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher);
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, setPassword] = useState('');
@@ -50,6 +54,14 @@ const SingUp = () => {
       }
     },
     [email, nickname, password, passwordCheck]);
+
+  if (data === undefined) {
+    return <div>로딩중...</div>;
+  }
+
+  if (data) {
+    return <Redirect to='/workspace/channel' />;
+  }
 
   return (
     <div id='container'>
