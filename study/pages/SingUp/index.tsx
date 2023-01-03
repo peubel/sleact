@@ -8,7 +8,7 @@ import fetcher from '@utils/fetcehr';
 import { Redirect } from 'react-router';
 
 const SingUp = () => {
-  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher);
+  const { data, error, mutate } = useSWR('/api/users', fetcher);
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, setPassword] = useState('');
@@ -36,7 +36,7 @@ const SingUp = () => {
 
       if (!mismatchError && nickname) {
         console.log('서버로 회원가입하기');
-        axios.post('http://localhost:3095/api/users', {
+        axios.post('/api/users', {
           email,
           nickname,
           password,
